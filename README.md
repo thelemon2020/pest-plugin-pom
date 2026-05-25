@@ -6,14 +6,11 @@ Page Objects keep your browser tests readable and maintainable by encapsulating 
 
 > **Early Release:** This plugin is in early development (pre-v1). Bugs are expected — if you encounter one, please [open an issue](https://github.com/thelemon2020/pest-plugin-pom/issues). Feedback and suggestions are very welcome.
 
-> **Note:** This plugin is designed for **Laravel** applications. It requires the Laravel framework for configuration, service provider registration, and the included Artisan generator commands.
-
 ---
 
 ## Requirements
 
 - PHP ^8.3
-- Laravel ^11.0|^12.0|^13.0
 - Pest ^4.0
 - pest-plugin-browser ^4.0
 
@@ -23,7 +20,7 @@ Page Objects keep your browser tests readable and maintainable by encapsulating 
 composer require thelemon2020/pest-plugin-pom --dev
 ```
 
-### Publishing the config
+### Publishing the config (Laravel only)
 
 ```bash
 php artisan vendor:publish --tag=pest-plugin-pom-config
@@ -187,7 +184,7 @@ it('shows the correct profile for a parameterized page', function () {
 
 ## Creating Page Objects
 
-### Artisan Generator
+### Artisan Generator (Laravel only)
 
 The quickest way to create a page is with the included Artisan command:
 
@@ -310,7 +307,7 @@ it('redirects to the dashboard after login', function () {
 
 Components let you encapsulate a reusable piece of UI — a navigation bar, a data table, a search widget — into its own class, separate from any particular page. A `Component` works exactly like a `Page`: it exposes methods that describe meaningful interactions and returns `static` for fluent chaining. The difference is that a component has no URL and is always obtained through a page, sharing the same browser session.
 
-### Creating Components
+### Creating Components (Laravel only)
 
 Use the Artisan generator to scaffold a component:
 
