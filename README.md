@@ -530,6 +530,67 @@ it('displays the logged-in user in the nav', function () {
 
 The resolved selector is composed automatically — `UserMenuComponent` inherits `#nav` from `NavBarComponent` and appends its own `.user-menu`, producing `#nav .user-menu`.
 
+### Multiple Instances of the Same Component
+
+When a page contains several instances of the same component — a list of cards, a set of table rows, a grid of product tiles — use `components()` instead of `component()`, then chain `->item(n)` to target a specific occurrence (1-based). The index is appended to the component's selector as `:nth-of-type(n)`.
+
+```php
+class CardComponent extends Component
+{
+    public static function selector(): string
+    {
+        return '.card';
+    }
+
+    public function assertTitle(string $title): static
+    {
+        return $this->assertSee($title);
+    }
+}
+```
+
+```php
+it('shows the correct titles for each card', function () {
+    $page = DashboardPage::open();
+
+    $page->components(CardComponent::class)->item(1)->assertTitle('Getting Started');
+    $page->components(CardComponent::class)->item(2)->assertTitle('Advanced Usage');
+    $page->components(CardComponent::class)->item(3)->assertTitle('API Reference');
+});
+```
+
+The same pattern works when targeting a child component inside a parent — the nth-of-type is appended to the child's selector, scoped within the parent as usual:
+
+```php
+// resolves to: #list .card:nth-of-type(2)
+$page->component(CardListComponent::class)
+     ->components(CardComponent::class)
+     ->item(2)
+     ->assertTitle('Advanced Usage');
+```
+
+For cleaner test code, consider defining typed accessor methods on your page that accept an index:
+
+```php
+class DashboardPage extends Page
+{
+    public static function url(): string
+    {
+        return '/dashboard';
+    }
+
+    public function card(int $index): CardComponent
+    {
+        return $this->components(CardComponent::class)->item($index);
+    }
+}
+```
+
+```php
+$page->card(1)->assertTitle('Getting Started');
+$page->card(2)->assertTitle('Advanced Usage');
+```
+
 ---
 
 ## Available Concerns (Traits)

@@ -322,6 +322,46 @@ it('assertSee passes a selector with a child combinator through unchanged', func
     expect($component->calls)->toBe([['assertSeeIn', 'nav > ul', 'text']]);
 });
 
+it('components()->item() appends :nth-of-type to the selector from a page', function () {
+    $page = new ExamplePage(pendingBrowser());
+
+    $card = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '.card'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $instance = $page->components($card::class)->item(2);
+    $instance->assertSee('title');
+
+    expect($instance->calls)->toBe([['assertSeeIn', '.card:nth-of-type(2)', 'title']]);
+});
+
+it('components()->item() appends :nth-of-type scoped under the parent selector', function () {
+    $card = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '.card'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $parent = new class(pendingBrowser()) extends Component {
+        public static function selector(): string { return '#list'; }
+    };
+
+    $instance = $parent->components($card::class)->item(3);
+    $instance->assertSee('title');
+
+    expect($instance->calls)->toBe([['assertSeeIn', '#list .card:nth-of-type(3)', 'title']]);
+});
+
 it('assertSee passes a selector with a pseudo-class through unchanged', function () {
     $component = new class(pendingBrowser()) extends Component {
         public array $calls = [];

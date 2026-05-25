@@ -65,13 +65,24 @@ abstract class Page
     /**
      * Create a typed Component instance backed by this page's browser session.
      *
-     *
      * @param  class-string<Component>  $componentClass
      * @return Component
      */
     public function component(string $componentClass): Component
     {
         return new $componentClass($this->browser);
+    }
+
+    /**
+     * Create a Component instance for use when multiple instances of the same
+     * component exist on the page. Chain ->item(n) to target a specific occurrence.
+     *
+     * @param  class-string<Component>  $componentClass
+     * @return Component
+     */
+    public function components(string $componentClass): Component
+    {
+        return $this->component($componentClass);
     }
 
     /**

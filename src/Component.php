@@ -25,18 +25,21 @@ abstract class Component
 
     private string $resolvedSelector;
 
-    final public function __construct(PendingAwaitablePage|AwaitableWebpage $browser, string $parentSelector = '')
+    private string $parentSelector;
+
+    final public function __construct(PendingAwaitablePage|AwaitableWebpage $browser, string $parentSelector = '', string $selectorSuffix = '')
     {
         $this->browser = $browser;
+        $this->parentSelector = $parentSelector;
 
         $own = static::selector();
 
         if ($own === '') {
             $this->resolvedSelector = '';
         } elseif ($parentSelector === '') {
-            $this->resolvedSelector = $own;
+            $this->resolvedSelector = $own . $selectorSuffix;
         } else {
-            $this->resolvedSelector = $parentSelector . ' ' . $own;
+            $this->resolvedSelector = $parentSelector . ' ' . $own . $selectorSuffix;
         }
     }
 
@@ -69,6 +72,26 @@ abstract class Component
     public function component(string $componentClass): Component
     {
         return new $componentClass($this->browser, $this->resolvedSelector);
+    }
+
+    /**
+     * Create a sub-Component instance for use when multiple instances of the same
+     * component exist on the page. Chain ->item(n) to target a specific occurrence.
+     *
+     * @param  class-string<Component>  $componentClass
+     */
+    public function components(string $componentClass): Component
+    {
+        return $this->component($componentClass);
+    }
+
+    /**
+     * Return a new instance of this component scoped to its nth occurrence (1-based)
+     * via :nth-of-type(). Intended to be chained from components().
+     */
+    public function item(int $index): static
+    {
+        return new static($this->browser, $this->parentSelector, ':nth-of-type(' . $index . ')');
     }
 
     /**
