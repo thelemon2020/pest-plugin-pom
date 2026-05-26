@@ -95,6 +95,17 @@ abstract class Component
     }
 
     /**
+     * Assert that the number of elements matching this component's selector equals $expected.
+     * Intended to be chained from components() to verify how many instances exist on the page.
+     */
+    public function assertTotal(int $expected): static
+    {
+        $this->requireSelector();
+
+        return $this->callBrowser('assertCount', $this->toCssLocator($this->resolvedSelector), $expected);
+    }
+
+    /**
      * Assert that the given text appears somewhere within this component.
      */
     public function assertSee(string|int|float $text): static

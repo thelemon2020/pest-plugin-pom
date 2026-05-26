@@ -322,6 +322,44 @@ it('assertSee passes a selector with a child combinator through unchanged', func
     expect($component->calls)->toBe([['assertSeeIn', 'nav > ul', 'text']]);
 });
 
+it('assertTotal asserts the count of elements matching the component selector', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '.card'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->assertTotal(3);
+
+    expect($component->calls)->toBe([['assertCount', '.card', 3]]);
+});
+
+it('assertTotal scopes the count within a parent component selector', function () {
+    $card = new class(pendingBrowser(), '#list') extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '.card'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $card->assertTotal(3);
+
+    expect($card->calls)->toBe([['assertCount', '#list .card', 3]]);
+});
+
+it('assertTotal throws LogicException when the component has no selector', function () {
+    $component = new class(pendingBrowser()) extends Component {};
+
+    $component->assertTotal(3);
+})->throws(\LogicException::class);
+
 it('components()->item() appends :nth-of-type to the selector from a page', function () {
     $page = new ExamplePage(pendingBrowser());
 

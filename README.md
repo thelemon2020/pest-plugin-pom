@@ -413,6 +413,7 @@ When `selector()` is defined, the component provides assertion methods that auto
 | `assertCount(string $childSelector, int $expected)` | Assert the count of elements matching `$childSelector` within the component |
 | `assertSeeIn(string $childSelector, string $text)` | Assert text appears within a child element inside the component |
 | `assertDontSeeIn(string $childSelector, string $text)` | Assert text does not appear within a child element inside the component |
+| `assertTotal(int $expected)` | Assert the number of elements matching this component's selector on the page (or within a parent component). Intended to be chained from `components()` |
 
 All of these throw a `LogicException` if `selector()` returns an empty string.
 
@@ -552,6 +553,8 @@ class CardComponent extends Component
 ```php
 it('shows the correct titles for each card', function () {
     $page = DashboardPage::open();
+
+    $page->components(CardComponent::class)->assertTotal(3);
 
     $page->components(CardComponent::class)->item(1)->assertTitle('Getting Started');
     $page->components(CardComponent::class)->item(2)->assertTitle('Advanced Usage');
