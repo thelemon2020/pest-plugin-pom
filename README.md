@@ -16,7 +16,7 @@ A [Pest](https://pestphp.com) plugin for writing browser tests using the Page Ob
 composer require thelemon2020/pest-plugin-pom --dev
 ```
 
-### Config (Laravel only)
+### Config
 
 ```bash
 php artisan vendor:publish --tag=pest-plugin-pom-config
@@ -225,7 +225,7 @@ $page->header()->userMenu()->assertSee('Jane Doe');
 
 ---
 
-## Generators (Laravel only)
+## Generators
 
 ```bash
 php artisan pest:page Login
