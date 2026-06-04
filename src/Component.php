@@ -287,14 +287,17 @@ abstract class Component
     }
 
     /**
-     * Ensures a CSS selector is treated as explicit by pest-plugin-browser's GuessLocator.
-     * Plain element-type selectors (e.g. "nav", "nav a") are not recognized as CSS
-     * and fall back to text-content matching. Appending ":is(*)" makes them explicit
-     * (the colon triggers the CSS path) while preserving the same element match.
+     * Ensures CSS element-type selectors are treated as explicit by pest-plugin-browser's
+     * GuessLocator. Bare element-type selectors (e.g. "nav", "my-element", "nav a") are not
+     * recognised as CSS by GuessLocator and would fall back to text-content matching.
+     * Appending ":is(*)" makes them explicit while preserving the same element match.
+     *
+     * Selectors that do not look like element-type names — @data-test selectors, already-explicit
+     * CSS, and text content strings — are returned as-is so GuessLocator handles them correctly.
      */
     private function toCssLocator(string $selector): string
     {
-        foreach (['#', '.', '[', 'internal:'] as $prefix) {
+        foreach (['#', '.', '[', 'internal:', '@'] as $prefix) {
             if (str_starts_with($selector, $prefix)) {
                 return $selector;
             }
@@ -306,7 +309,15 @@ abstract class Component
             }
         }
 
-        return $selector . ':is(*)';
+        // Only element-type selectors get :is(*) — they are all-lowercase with hyphens,
+        // with optional space-separated descendant parts (e.g. "nav", "my-element", "nav a").
+        // Text content strings have uppercase letters or other patterns and pass through
+        // unchanged so GuessLocator's getByText fallback handles them as intended.
+        if (preg_match('/^[a-z][a-z0-9-]*( [a-z][a-z0-9-]*)*$/', $selector)) {
+            return $selector . ':is(*)';
+        }
+
+        return $selector;
     }
 
     /**

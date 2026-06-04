@@ -415,3 +415,119 @@ it('assertSee passes a selector with a pseudo-class through unchanged', function
 
     expect($component->calls)->toBe([['assertSeeIn', 'nav:first-child', 'text']]);
 });
+
+it('assertSee appends :is(*) to a custom element selector', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return 'my-element'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->assertSee('text');
+
+    expect($component->calls)->toBe([['assertSeeIn', 'my-element:is(*)', 'text']]);
+});
+
+it('assertSee appends :is(*) to a descendant element selector', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return 'nav a'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->assertSee('text');
+
+    expect($component->calls)->toBe([['assertSeeIn', 'nav a:is(*)', 'text']]);
+});
+
+// toCssLocator — @data-test selectors pass through unchanged
+
+it('assertSee passes an @data-test selector through unchanged', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '@search-panel'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->assertSee('text');
+
+    expect($component->calls)->toBe([['assertSeeIn', '@search-panel', 'text']]);
+});
+
+it('assertVisible passes an @data-test selector through unchanged', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '@results-table'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->assertVisible();
+
+    expect($component->calls)->toBe([['assertVisible', '@results-table']]);
+});
+
+// toCssLocator — text content selectors pass through unchanged
+
+it('assertSee passes a mixed-case text content selector through unchanged', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return 'Featured Items'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->assertSee('text');
+
+    expect($component->calls)->toBe([['assertSeeIn', 'Featured Items', 'text']]);
+});
+
+it('assertSee passes a capitalised single-word text selector through unchanged', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return 'Submit'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->assertSee('text');
+
+    expect($component->calls)->toBe([['assertSeeIn', 'Submit', 'text']]);
+});
+
+it('assertSee passes a text= explicit selector through unchanged', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return 'text=active'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->assertSee('text');
+
+    expect($component->calls)->toBe([['assertSeeIn', 'text=active', 'text']]);
+});

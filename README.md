@@ -155,6 +155,18 @@ page(DashboardPage::class)
 
 Selectors passed to interaction methods are scoped to the component's root element automatically.
 
+#### Selector types
+
+`selector()` supports all Pest selector forms:
+
+| Form | Example | Matches |
+|---|---|---|
+| CSS | `'nav'`, `'.card'`, `'#main'`, `'my-element'` | CSS selector |
+| `@` data-test | `'@search-panel'` | `data-test` or `data-testid` attribute |
+| Text content | `'Featured Items'` | Element with that visible text |
+
+> **Tip:** If a text content selector isn't behaving as expected, use Playwright's explicit `text=` prefix — e.g. `'text=submit'`.
+
 ### Typed Accessors
 
 ```php
