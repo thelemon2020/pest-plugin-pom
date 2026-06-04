@@ -16,16 +16,22 @@ jobs:
       matrix:
         include:
           - php: "8.3"
-            laravel: "11.*"
-            testbench: "9.*"
-          - php: "8.3"
             laravel: "12.*"
             testbench: "10.*"
           - php: "8.4"
-            laravel: "11.*"
-            testbench: "9.*"
-          - php: "8.4"
             laravel: "12.*"
+            testbench: "10.*"
+          - php: "8.5"
+            laravel: "12.*"
+            testbench: "10.*"
+          - php: "8.3"
+            laravel: "13.*"
+            testbench: "10.*"
+          - php: "8.4"
+            laravel: "13.*"
+            testbench: "10.*"
+          - php: "8.5"
+            laravel: "13.*"
             testbench: "10.*"
 
     steps:
