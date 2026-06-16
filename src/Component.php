@@ -185,6 +185,16 @@ abstract class Component
         return $this->callBrowser('assertDontSeeIn', $this->toCssLocator($this->resolvedSelector . ' ' . $childSelector), $text);
     }
 
+    /**
+     * Take a screenshot of this component's root element.
+     */
+    public function screenshot(?string $filename = null): static
+    {
+        $this->requireSelector();
+
+        return $this->callBrowser('screenshotElement', $this->resolvedSelector, $filename);
+    }
+
     public function click(string $selector): static
     {
         return $this->callBrowser('click', $this->scope($selector));

@@ -531,3 +531,59 @@ it('assertSee passes a text= explicit selector through unchanged', function () {
 
     expect($component->calls)->toBe([['assertSeeIn', 'text=active', 'text']]);
 });
+
+// screenshot — captures the component's root element
+
+it('screenshot calls screenshotElement with the resolved selector', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '#hero'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->screenshot();
+
+    expect($component->calls)->toBe([['screenshotElement', '#hero', null]]);
+});
+
+it('screenshot passes the given filename to screenshotElement', function () {
+    $component = new class(pendingBrowser()) extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '.card'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->screenshot('my-card');
+
+    expect($component->calls)->toBe([['screenshotElement', '.card', 'my-card']]);
+});
+
+it('screenshot throws LogicException when the component has no selector', function () {
+    $component = new class(pendingBrowser()) extends Component {};
+
+    $component->screenshot();
+})->throws(\LogicException::class);
+
+it('screenshot uses the resolved selector including parent scope', function () {
+    $component = new class(pendingBrowser(), '#list') extends Component {
+        public array $calls = [];
+        public static function selector(): string { return '.card'; }
+        protected function callBrowser(string $method, mixed ...$args): static
+        {
+            $this->calls[] = [$method, ...$args];
+            return $this;
+        }
+    };
+
+    $component->screenshot();
+
+    expect($component->calls)->toBe([['screenshotElement', '#list .card', null]]);
+});
