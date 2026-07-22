@@ -1,6 +1,6 @@
 # Pest-POM
 
-A [Pest](https://pestphp.com) plugin for writing browser tests using the Page Object Model pattern. Integrates with [pest-plugin-browser](https://github.com/pestphp/pest-plugin-browser).
+A [Pest](https://pestphp.com) plugin for writing browser tests using the [Page Object Model pattern](https://playwright.dev/docs/pom). Integrates with [pest-plugin-browser](https://github.com/pestphp/pest-plugin-browser).
 
 ## Requirements
 
