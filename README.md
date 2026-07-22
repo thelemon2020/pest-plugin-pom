@@ -2,8 +2,6 @@
 
 A [Pest](https://pestphp.com) plugin for writing browser tests using the Page Object Model pattern. Integrates with [pest-plugin-browser](https://github.com/pestphp/pest-plugin-browser).
 
-> **Early Release:** Pre-v1, bugs are expected. Please [open an issue](https://github.com/thelemon2020/pest-plugin-pom/issues) if you find one.
-
 ## Requirements
 
 - PHP ^8.3
