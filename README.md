@@ -4,9 +4,9 @@ A [Pest](https://pestphp.com) plugin for writing browser tests using the [Page O
 
 ## Requirements
 
-- PHP ^8.3
-- Pest ^4.0
-- pest-plugin-browser ^4.0
+- PHP ^8.3 (^8.4 if using Pest 5)
+- Pest ^4.0 or ^5.0
+- pest-plugin-browser ^4.0 or ^5.0
 
 ## Installation
 

@@ -8,29 +8,45 @@ on:
 
 jobs:
   test:
-    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
+    name: PHP ${{ matrix.php }} / Pest ${{ matrix.pest }} / Laravel ${{ matrix.laravel }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         include:
+          # Pest 4
           - php: "8.3"
+            pest: "4.*"
             laravel: "12.*"
             testbench: "10.*"
           - php: "8.4"
+            pest: "4.*"
             laravel: "12.*"
             testbench: "10.*"
           - php: "8.5"
+            pest: "4.*"
             laravel: "12.*"
             testbench: "10.*"
           - php: "8.3"
+            pest: "4.*"
             laravel: "13.*"
             testbench: "11.*"
           - php: "8.4"
+            pest: "4.*"
             laravel: "13.*"
             testbench: "11.*"
           - php: "8.5"
+            pest: "4.*"
+            laravel: "13.*"
+            testbench: "11.*"
+          # Pest 5 requires PHP >= 8.4 and PHPUnit 13, which only Testbench 11 allows.
+          - php: "8.4"
+            pest: "5.*"
+            laravel: "13.*"
+            testbench: "11.*"
+          - php: "8.5"
+            pest: "5.*"
             laravel: "13.*"
             testbench: "11.*"
 
@@ -45,9 +61,11 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip
           coverage: none
 
-      - name: Pin Laravel and Testbench versions
+      - name: Pin Pest, Laravel and Testbench versions
         run: |
           composer require \
+            "pestphp/pest:${{ matrix.pest }}" \
+            "pestphp/pest-plugin-browser:${{ matrix.pest }}" \
             "illuminate/console:${{ matrix.laravel }}" \
             "illuminate/support:${{ matrix.laravel }}" \
             "orchestra/testbench:${{ matrix.testbench }}" \
